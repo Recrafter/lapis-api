@@ -3,12 +3,12 @@ package io.github.recrafter.lapis.api
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation
 import kotlin.jvm.functions.FunctionN
 
-class Original<F : Function<*>> internal constructor(function: F) {
+class LapisTarget<T> internal constructor(private val point: T) {
 
-    val call: F = function
+    val call: T = point
         get() {
             if (isDisabled) {
-                error("Original operation is disabled and cannot be called.")
+                error("Target is disabled and cannot be called.")
             }
             isCalled = true
             return field
@@ -17,21 +17,24 @@ class Original<F : Function<*>> internal constructor(function: F) {
     private var isCalled: Boolean = false
     private var isDisabled: Boolean = false
 
+    fun get(): T =
+        point
+
     fun disable() {
         if (isCalled) {
-            error("Cannot disable: original operation has already been called.")
+            error("Cannot disable: target has already been called.")
         }
         isDisabled = true
     }
 
     companion object {
         @JvmStatic
-        fun <F : Function<*>> of(@Suppress("unused") operation: Operation<*>, function: F): Original<F> =
-            Original(function)
+        fun <F> of(@Suppress("unused") operation: Operation<*>, function: F): LapisTarget<F> =
+            LapisTarget(function)
 
         @JvmStatic
-        fun <R> of(operation: Operation<R>, arity: Int): Original<FunctionN<R>> =
-            Original(object : FunctionN<R> {
+        fun <R> of(operation: Operation<R>, arity: Int): LapisTarget<FunctionN<R>> =
+            LapisTarget(object : FunctionN<R> {
                 override val arity: Int = arity
 
                 override fun invoke(vararg args: Any?): R = operation.call(*args)
@@ -39,5 +42,5 @@ class Original<F : Function<*>> internal constructor(function: F) {
     }
 }
 
-fun <F : Function<*>> originalOf(function: () -> F): Original<F> =
-    Original(function())
+fun <F> targetOf(function: () -> F): LapisTarget<F> =
+    LapisTarget(function())

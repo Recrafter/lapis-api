@@ -1,6 +1,6 @@
 package io.github.recrafter.lapis.api
 
-enum class PatchSide {
+enum class LapisPatchSide {
     Common,
     ClientOnly,
     DedicatedServerOnly,

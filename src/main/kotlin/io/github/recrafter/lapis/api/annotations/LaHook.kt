@@ -1,8 +1,9 @@
 package io.github.recrafter.lapis.api.annotations
 
-import io.github.recrafter.lapis.api.HookKind
+import io.github.recrafter.lapis.api.LapisWrapKind
 import kotlin.annotation.Target
 
+@La
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.SOURCE)
-annotation class Hook(val kind: HookKind)
+annotation class LaHook(val wrap: LapisWrapKind)
