@@ -3,12 +3,12 @@ package io.github.recrafter.lapis.api
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation
 import kotlin.jvm.functions.FunctionN
 
-class LapisTarget<T> internal constructor(private val point: T) {
+class LapisTarget<F : Function<*>> internal constructor(function: F) {
 
-    val call: T = point
+    val call: F = function
         get() {
             if (isDisabled) {
-                error("Target is disabled and cannot be called.")
+                error("Target function is disabled and cannot be called.")
             }
             isCalled = true
             return field
@@ -17,19 +17,16 @@ class LapisTarget<T> internal constructor(private val point: T) {
     private var isCalled: Boolean = false
     private var isDisabled: Boolean = false
 
-    fun get(): T =
-        point
-
     fun disable() {
         if (isCalled) {
-            error("Cannot disable: target has already been called.")
+            error("Cannot disable: target function has already been called.")
         }
         isDisabled = true
     }
 
     companion object {
         @JvmStatic
-        fun <F> of(@Suppress("unused") operation: Operation<*>, function: F): LapisTarget<F> =
+        fun <F : Function<*>> of(@Suppress("unused") operation: Operation<*>, function: F): LapisTarget<F> =
             LapisTarget(function)
 
         @JvmStatic
@@ -42,5 +39,5 @@ class LapisTarget<T> internal constructor(private val point: T) {
     }
 }
 
-fun <F> targetOf(function: () -> F): LapisTarget<F> =
+fun <F : Function<*>> targetOf(function: () -> F): LapisTarget<F> =
     LapisTarget(function())
