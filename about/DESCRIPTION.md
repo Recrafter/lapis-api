@@ -1,1 +1,1 @@
-API for Lapis KSP.
+Runtime API for Lapis KSP.

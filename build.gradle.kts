@@ -6,11 +6,6 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
 }
 
-dependencies {
-    compileOnly(libs.mixin)
-    compileOnly(libs.mixin.extras)
-}
-
 projekt {
     kotlinLibrary {
         jvmTarget = JvmTarget.JVM_1_8
